@@ -3,7 +3,7 @@ name: Build Binance Liquid Glass APK
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -20,7 +20,10 @@ jobs:
           java-version: "17"
 
       - name: Install Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
+        with:
+          accept-android-sdk-licenses: true
+          log-accepted-android-sdk-licenses: false
 
       - name: Install SDK packages
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
@@ -31,16 +34,13 @@ jobs:
           gradle-version: "8.9"
 
       - name: Extract Android project
-        run: |
-          unzip -q BinanceLiquidGlass_Android_Project_with_APK_Build.zip -d .
+        run: unzip -q BinanceLiquidGlass_Android_Project_with_APK_Build.zip -d .
 
       - name: Build APK
-        run: |
-          cd BinanceLiquidGlass
-          gradle assembleDebug
+        run: gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: BinanceLiquidGlass-APK
-          path: BinanceLiquidGlass/app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
